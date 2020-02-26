@@ -1,0 +1,507 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8",
+    "name": "midupont: master",
+    "title": "midupont: master",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "name",
+          "type": "datatype.string",
+          "is_required": true
+        },
+        "unique_name": "variable_workflow_01C6TN6LWQ0NF0FYPEJsewoVs9QZe3BrsE3",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "local",
+          "name": "results",
+          "type": "datatype.string",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "\n",
+          "scope": "local",
+          "name": "Enter key",
+          "type": "datatype.string",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01DYMY1AIU6A00nAVZtG4PwoYbtXvTDhEOs",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "midupont: master",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "web-service.endpoint",
+        "target_id": "definition_target_01C4ZIVMOTI2402YbhwD54QulA2eQVNUUoz",
+        "execute_on_workflow_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01C6TJMT0GX637JV0ShO9l5ClCLxO58YdDE",
+        "name": "midupont-Query JSONPlaceHolder",
+        "title": "midupont-Query JSONPlaceHolder",
+        "type": "workflow.atomic_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "display_name": "midupont-Query JSONPlaceHolder",
+          "input": {
+            "variable_workflow_01C4ZV4VA61LE1vpa6x2O7hRjndKYupaFg2": "users"
+          },
+          "runtime_user": {
+            "target_default": true
+          },
+          "target": {
+            "execute_on_this_target": true,
+            "target_id": "definition_target_01C4ZIVMOTI2402YbhwD54QulA2eQVNUUoz",
+            "target_type": "web-service.endpoint"
+          },
+          "workflow_id": "definition_workflow_01C4ZN2S7RD736DZ8ojDz45JSqTlkFIU3FP"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01C50CS173YJ72y62eOuCYKHi2ZhEQKN0Mj",
+        "name": "JSONPath Query",
+        "title": "Get Information out",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "display_name": "Get Information out",
+          "input_json": "$activity.definition_activity_01C6TJMT0GX637JV0ShO9l5ClCLxO58YdDE.output.variable_workflow_01C4ZVU2CYYLQ5dE1gtTWeQJB6AuktPACyX$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.[?(@.username==\"$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.input.variable_workflow_01C6TN6LWQ0NF0FYPEJsewoVs9QZe3BrsE3$\")]",
+              "jsonpath_query_name": "name",
+              "jsonpath_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01C50HJ9GNYPB7mrp8wwniON5E57VbpHZrj",
+        "name": "Execute Python Script",
+        "title": "Run Python Script",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "display_name": "Run Python Script",
+          "script": "import json\nimport sys\nblock = json.loads(sys.argv[1])\nif block['name']:\n  output = block['name']\nelse:\n  output = \"No Name Found.\"",
+          "script_arguments": [
+            "$activity.definition_activity_01C50CS173YJ72y62eOuCYKHi2ZhEQKN0Mj.output.jsonpath_queries.name$"
+          ],
+          "script_queries": [
+            {
+              "script_query": "output",
+              "script_query_name": "name_of_person",
+              "script_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01DYM3AHB0OU00hGOXrkbTgoDqmZ2wPVkjf",
+        "name": "Condition Block",
+        "title": "If found name",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "If found name",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01DYM3ALGCGB11nkv76khIaA50UZVhhCe9d",
+            "name": "Condition Branch",
+            "title": "Then",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01C50CS173YJ72y62eOuCYKHi2ZhEQKN0Mj.output.succeeded$",
+                "operator": "eq",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "display_name": "Then",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01DZCVXW4FJNO43Df93022afUKdSrH6RnHh",
+                "name": "Group",
+                "title": "Group",
+                "type": "logic.group",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Group",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01DYM6RHVR7A52cL4HrBVvXVJBpABJp1sKH",
+                    "name": "Set Variables",
+                    "title": "Set Variables",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Set Variables",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3$",
+                          "variable_value_new": "We found $workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.input.variable_workflow_01C6TN6LWQ0NF0FYPEJsewoVs9QZe3BrsE3$ by their username $activity.definition_activity_01C50HJ9GNYPB7mrp8wwniON5E57VbpHZrj.output.script_queries.name_of_person$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01DYM9V83W2UC3fqlOyh1bGvmKkphxJvrUO",
+                    "name": "Write File",
+                    "title": "Write File",
+                    "type": "windows.write_file",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "continue_on_failure": false,
+                      "display_name": "Write File",
+                      "encoding": "utf-8",
+                      "file_content": "$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3$$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYMY1AIU6A00nAVZtG4PwoYbtXvTDhEOs$",
+                      "file_name_with_path": "E:\\ao\\midupont-basic-workflow-results.txt",
+                      "options": "AEF",
+                      "runtime_user": {
+                        "override_target_runtime_user": false,
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "override_workflow_target": true,
+                        "target_id": "definition_target_01DYMBI4WRGFR5SC1QmB0IL8YMDplKCWuaF"
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01DZCU76RIFFQ459bytlFRsUgUkenEFJwdi",
+                    "name": "Send Email",
+                    "title": "Send Email",
+                    "type": "email.smtp_send_email",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "body": "$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3$",
+                      "continue_on_failure": true,
+                      "display_name": "Send Email",
+                      "runtime_user": {
+                        "override_target_runtime_user": false,
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "subject": "AOlab $workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.output.instance_id$",
+                      "target": {
+                        "override_workflow_target": true,
+                        "target_id": "definition_target_01C4ZL4CKR91C1288ctYJ8KFh86rCe26tHw"
+                      },
+                      "to": "midupont@cisco.com"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01DYM3ANHDT1C2Fy7knwu2GlYIl9thiq6RH",
+            "name": "Condition Branch",
+            "title": "Else",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01C50CS173YJ72y62eOuCYKHi2ZhEQKN0Mj.output.succeeded$",
+                "operator": "ne",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "display_name": "Else",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01DZCW8EM70B61FBn2OG4H6lTw6X56pe1Hj",
+                "name": "Group",
+                "title": "Group",
+                "type": "logic.group",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Group",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01DZCW8IVDAVS5vk0hlxqAUVAFOEbw20fwK",
+                    "name": "Set Variables",
+                    "title": "Set Variables",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Set Variables",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3$",
+                          "variable_value_new": "We did not find a person"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01DZCW8K5808L742EPDk3ax5dFtfbRTNTnz",
+                    "name": "Write File",
+                    "title": "Write File",
+                    "type": "windows.write_file",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "continue_on_failure": false,
+                      "display_name": "Write File",
+                      "encoding": "utf-8",
+                      "file_content": "$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3$$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYMY1AIU6A00nAVZtG4PwoYbtXvTDhEOs$",
+                      "file_name_with_path": "E:\\ao\\midupont-basic-workflow-results.txt",
+                      "options": "AEF",
+                      "runtime_user": {
+                        "override_target_runtime_user": false,
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "override_workflow_target": true,
+                        "target_id": "definition_target_01DYMBI4WRGFR5SC1QmB0IL8YMDplKCWuaF"
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01DZCW8LTDF2O4gBRDhQSjwmPUfyb06Tk8L",
+                    "name": "Send Email",
+                    "title": "Send Email",
+                    "type": "email.smtp_send_email",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "body": "$workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.local.variable_workflow_01DYM6LX91IDB5cf5WhwAhRrcVkaBOFnRj3$",
+                      "continue_on_failure": true,
+                      "display_name": "Send Email",
+                      "runtime_user": {
+                        "override_target_runtime_user": false,
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "subject": "AOlab $workflow.definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8.output.instance_id$",
+                      "target": {
+                        "override_workflow_target": true,
+                        "target_id": "definition_target_01C4ZL4CKR91C1288ctYJ8KFh86rCe26tHw"
+                      },
+                      "to": "midupont@cisco.com"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_01C4ZFHGNOPKP1AHPHHBp7GtumfMaX96Vw3"
+    ]
+  },
+  "categories": {
+    "category_01C4ZFHGNOPKP1AHPHHBp7GtumfMaX96Vw3": {
+      "unique_name": "category_01C4ZFHGNOPKP1AHPHHBp7GtumfMaX96Vw3",
+      "name": "midupont",
+      "title": "midupont",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "triggers": {
+    "triggerschedule_01DZDEMFFU83A0gHWLQQvfKMcEmZnX83oS1": {
+      "workflow_id": "definition_workflow_01C509924CXYT3gBAmt7jsRsg80cuMBhur8",
+      "name": "Hourly",
+      "title": "",
+      "lowercase_name": "schedule.hourly",
+      "type": "schedule",
+      "base_type": "trigger",
+      "ref_id": "schedule_01DZDDG81BHBZ2lbzsoIrFTba7th4THu0zr",
+      "version": "1.0.0",
+      "disabled": false,
+      "unique_name": "triggerschedule_01DZDEMFFU83A0gHWLQQvfKMcEmZnX83oS1",
+      "object_type": "triggerschedule"
+    }
+  },
+  "schedules": {
+    "schedule_01DZDDG81BHBZ2lbzsoIrFTba7th4THu0zr": {
+      "unique_name": "schedule_01DZDDG81BHBZ2lbzsoIrFTba7th4THu0zr",
+      "name": "Hourly",
+      "type": "basic.schedule",
+      "base_type": "schedule",
+      "properties": {
+        "calendar": "calendar_recurring_1BMfMWvgiDhSjBQ7hTSyvz3NyVZ",
+        "timezone": "Etc/GMT+0",
+        "starttime": "00:00",
+        "interval_hours": 1,
+        "interval_minutes": 0,
+        "number_of_times": 23,
+        "display_name": "Hourly",
+        "description": ""
+      },
+      "version": "1.0.0",
+      "object_type": "schedule"
+    }
+  },
+  "targets": {
+    "definition_target_01C4ZIVMOTI2402YbhwD54QulA2eQVNUUoz": {
+      "unique_name": "definition_target_01C4ZIVMOTI2402YbhwD54QulA2eQVNUUoz",
+      "name": "midupont: jsonplaceholder.typicode.com",
+      "title": "midupont: jsonplaceholder.typicode.com",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "default_runtime_user_id": "definition_runtime_user_01C4ZHBG1GWYG5DcVTIAsmjJ221H3cMQrJm",
+        "description": "Created for Basic workflow (excercise 04)",
+        "disable_certificate_validation": true,
+        "display_name": "midupont: jsonplaceholder.typicode.com",
+        "host": "jsonplaceholder.typicode.com",
+        "no_runtime_user": false,
+        "port": 443,
+        "protocol": "https"
+      }
+    },
+    "definition_target_01C4ZL4CKR91C1288ctYJ8KFh86rCe26tHw": {
+      "unique_name": "definition_target_01C4ZL4CKR91C1288ctYJ8KFh86rCe26tHw",
+      "name": "midupont: outbound.cisco.com",
+      "title": "midupont: outbound.cisco.com",
+      "type": "email.smtp_endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "default_runtime_user_id": "definition_runtime_user_01C4ZKSWHP38M0X7q5K30mPatvjArHFo9Gb",
+        "display_name": "midupont: outbound.cisco.com",
+        "no_runtime_user": false,
+        "port": 25,
+        "protocol": "SMTP",
+        "server": "outbound.cisco.com"
+      }
+    },
+    "definition_target_01DYMBI4WRGFR5SC1QmB0IL8YMDplKCWuaF": {
+      "unique_name": "definition_target_01DYMBI4WRGFR5SC1QmB0IL8YMDplKCWuaF",
+      "name": "CSIT-AUTO-FS.cisco.com",
+      "title": "CSIT-AUTO-FS.cisco.com",
+      "type": "windows.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "default_runtime_user_id": "definition_runtime_user_01DYMB6HJ6FCU2zYFzyADLW9NpARxgKcJ7s",
+        "display_name": "CSIT-AUTO-FS.cisco.com",
+        "host": "CSIT-AUTO-FS.cisco.com",
+        "port": 5985,
+        "protocol": "http"
+      }
+    }
+  },
+  "runtime_users": {
+    "definition_runtime_user_01C4ZHBG1GWYG5DcVTIAsmjJ221H3cMQrJm": {
+      "unique_name": "definition_runtime_user_01C4ZHBG1GWYG5DcVTIAsmjJ221H3cMQrJm",
+      "name": "midupont:test",
+      "title": "midupont:test",
+      "type": "runtime_user.web-service_basic_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "auth_option": "*****",
+        "basic_password": "*****",
+        "basic_username": "*****",
+        "display_name": "midupont:test"
+      }
+    },
+    "definition_runtime_user_01C4ZKSWHP38M0X7q5K30mPatvjArHFo9Gb": {
+      "unique_name": "definition_runtime_user_01C4ZKSWHP38M0X7q5K30mPatvjArHFo9Gb",
+      "name": "midupont: SMTP",
+      "title": "midupont: SMTP",
+      "type": "runtime_user.email_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "display_name": "midupont: SMTP",
+        "password": "*****",
+        "sender": "*****"
+      }
+    },
+    "definition_runtime_user_01DYMB6HJ6FCU2zYFzyADLW9NpARxgKcJ7s": {
+      "unique_name": "definition_runtime_user_01DYMB6HJ6FCU2zYFzyADLW9NpARxgKcJ7s",
+      "name": "CSIT-AUTO-FS.cisco.com",
+      "title": "CSIT-AUTO-FS.cisco.com",
+      "type": "runtime_user.windows_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "display_name": "CSIT-AUTO-FS.cisco.com",
+        "password": "*****",
+        "username": "*****"
+      }
+    }
+  },
+  "atomic_workflows": [
+    "definition_workflow_01C4ZN2S7RD736DZ8ojDz45JSqTlkFIU3FP"
+  ]
+}
